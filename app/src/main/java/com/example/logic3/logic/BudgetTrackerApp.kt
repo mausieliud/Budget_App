@@ -206,7 +206,7 @@ fun BudgetTrackerApp() {
                         }
                     )
                 }
-                3 -> ReportsScreen(expensesList)
+                3 -> ReportsScreen(tracker.expenses)
             }
         }
     }

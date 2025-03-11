@@ -206,7 +206,18 @@ fun BudgetTrackerApp() {
                         }
                     )
                 }
-                3 -> ReportsScreen(expensesList)
+                3 -> ReportsScreen(
+                    expenses = expensesList,
+                    budgetTracker = tracker,
+                    onExportReport = { reportText ->
+                        // Handle the exported report here
+                        // For example, you might want to save it to a file or share it
+                        coroutineScope.launch {
+                            snackbarHostState.showSnackbar("Report exported successfully!")
+                        }
+                        // Add your export handling logic here
+                    }
+                )
             }
         }
     }

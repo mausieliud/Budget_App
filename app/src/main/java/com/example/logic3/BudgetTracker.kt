@@ -15,9 +15,9 @@ class BudgetTracker(context: Context) {
     private var totalBudget: Double = 0.0
     private var startDate: LocalDate = LocalDate.now()
     private var endDate: LocalDate = LocalDate.now()
-    private var allocationPerDay: Double = 0.0
+     var allocationPerDay: Double = 0.0
     private var totalRemainingBudget: Double = 0.0
-    private val expenses = mutableListOf<Expense>() // Keep expenses in memory for faster access
+    val expenses = mutableListOf<Expense>() // Keep expenses in memory for faster access
 
     init {
         loadBudget()
@@ -132,7 +132,7 @@ class BudgetTracker(context: Context) {
         // Update remaining budget in database
         updateRemainingBudgetInDb()
 
-        recalculateDailyAllocationIfNeeded() // Call this function after adding expense
+        adjustForOverflow() // removed recalculateDailyAllocationIfNeeded() and replaced with AdjustforOverflow
     }
 
     private fun updateRemainingBudgetInDb() {
@@ -151,8 +151,8 @@ class BudgetTracker(context: Context) {
 
         if (dailySpent > allocationPerDay) {
             val overSpentAmount = dailySpent - allocationPerDay
-            if (totalRemainingBudget < 0) { // To prevent negative remaining budget, consider overspent amount only within remaining budget
-                return // Or handle it as per your requirement, e.g., set allocation to 0
+            if (totalRemainingBudget < 0) { // FEATURE TO ADD To prevent negative remaining budget, consider overspent amount only within remaining budget
+                return // Or handle it as per requirementS, I.E set allocation to 0
             }
 
             val remainingDays = ChronoUnit.DAYS.between(today.plusDays(1), endDate).toInt() + 1 // Days from tomorrow onwards
@@ -171,18 +171,100 @@ class BudgetTracker(context: Context) {
     }
 
     fun getExpensesList(): String {
-        return expenses.joinToString("\n") { "${it.description} - $${it.amount} (${it.category}) on ${it.date}" }
+        return expenses.joinToString("\n") {
+            "${it.description} - $${String.format("%.2f", it.amount)} (${it.category}) on ${it.date}"
+        }
     }
 
     fun getBudgetSummary(): String {
-        return "Total Budget: $$totalBudget\n" +
-                "Daily Allocation: $$allocationPerDay\n" +
-                "Remaining for today: $${getRemainingDailyAllocation()}\n" +
-                "Remaining Amount: $${getTotalRemainingBudget()}"
+        return "Total Budget: Ksh.${String.format("%.2f", totalBudget)}\n" +
+                "Daily Allocation: Ksh.${String.format("%.2f", allocationPerDay)}\n" +
+                "Remaining for today: Ksh.${String.format("%.2f", getRemainingDailyAllocation())}\n" +
+                "Remaining Amount: Ksh.${String.format("%.2f", getTotalRemainingBudget())}"
     }
 
     // Public getter function to access totalRemainingBudget
     fun getTotalRemainingBudget(): Double {
         return totalRemainingBudget
+    }
+    // Add to BudgetTracker class
+    fun adjustForUnderflow(option: String = "reallocate") {
+        val today = LocalDate.now()
+        val dailySpent = expenses.filter { it.date == today }.sumOf { it.amount }
+
+        // Check if today's expenses are less than the daily budget
+        if (dailySpent < allocationPerDay) {
+            // Calculate surplus
+            val surplus = allocationPerDay - dailySpent
+
+            // Calculate remaining days
+            val remainingDays = ChronoUnit.DAYS.between(today.plusDays(1), endDate).toInt() + 1
+
+            when (option) {
+                "reallocate" -> {
+                    // Spread surplus evenly across remaining days
+                    if (remainingDays > 0) {
+                        val additionalPerDay = surplus / remainingDays
+                        allocationPerDay += additionalPerDay
+                    }
+                }
+                "next_day" -> {
+                    // Store surplus amount for next day only
+                    // a new field/table to track daily adjustments
+                    val db = dbHelper.writableDatabase
+                    val values = ContentValues().apply {
+                        put("date", today.plusDays(1).format(DateTimeFormatter.ISO_DATE))
+                        put("adjustment", surplus)
+                    }
+                    db.insertWithOnConflict("daily_adjustments", null, values, SQLiteDatabase.CONFLICT_REPLACE)
+                    db.close()
+                }
+                "save" -> {
+                    // Store surplus in savings
+                    // add a savings field to the budget table
+                    val db = dbHelper.writableDatabase
+                    val values = ContentValues().apply {
+                        put("savings", surplus)
+                    }
+                    db.update(DatabaseHelper.BUDGET_TABLE_NAME, values, null, null)
+                    db.close()
+                }
+            }
+
+            // Update database
+            saveBudgetToDb()
+        }
+    }
+
+    fun adjustForOverflow() {
+        val today = LocalDate.now()
+        val dailySpent = expenses.filter { it.date == today }.sumOf { it.amount }
+
+        // Check if today's expenses exceed the daily budget
+        if (dailySpent > allocationPerDay) {
+            // Calculate the excess amount
+            val excess = dailySpent - allocationPerDay
+
+            // Calculate remaining days
+            val remainingDays = ChronoUnit.DAYS.between(today.plusDays(1), endDate).toInt() + 1
+
+            if (remainingDays > 0) {
+                // Distribute excess evenly across remaining days
+                val reductionPerDay = excess / remainingDays
+                allocationPerDay -= reductionPerDay
+
+                // Make sure allocation doesn't go negative
+                if (allocationPerDay < 0) {
+                    allocationPerDay = 0.0
+                }
+            }
+
+            // Update database
+            saveBudgetToDb()
+        }
+    }
+    //for reporting ,also in reporting
+    fun BudgetTracker.getDailyAllocation(): Double {
+        return allocationPerDay
     }
 }

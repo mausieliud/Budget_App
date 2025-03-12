@@ -206,7 +206,20 @@ fun BudgetTrackerApp() {
                         }
                     )
                 }
-                3 -> ReportsScreen(expensesList)
+                //NOTE reportscreen was Rs(ExpensesList) then Rs(tracker.expenses)
+                3 -> ReportsScreen(
+                    expenses = expensesList,
+                    budgetTracker = tracker,
+                    onExportReport = { reportText ->
+
+                        //TODO
+                        // Handle REPORT EXPORT
+                        coroutineScope.launch {
+                            snackbarHostState.showSnackbar("Report exported successfully!")
+                        }
+                        //PLACEHOLDER FOR EXPORT HANDLING LOGIC
+                    }
+                )
             }
         }
     }

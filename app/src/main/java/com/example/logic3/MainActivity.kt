@@ -12,6 +12,7 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import com.example.logic3.logic.BudgetTrackerApp
 
 
+
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -20,19 +21,11 @@ class MainActivity : ComponentActivity() {
                 Surface(
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colorScheme.background
-                ) {
+                ) {//TODO need to add applogo and welcome/instructions before calling BudgettrackerAPP
                     BudgetTrackerApp()
                 }
             }
         }
     }
 }
-
-
-
-
-
-
-
-
 

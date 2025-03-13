@@ -21,6 +21,7 @@ import androidx.compose.material.icons.filled.AttachMoney
 import androidx.compose.material.icons.filled.Category
 import androidx.compose.material.icons.filled.Description
 import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.DropdownMenu
@@ -54,7 +55,7 @@ fun ExpenseItem(expense: Expense) {
             .fillMaxWidth()
             .padding(vertical = 4.dp),
         colors = CardDefaults.cardColors(
-            containerColor = MaterialTheme.colorScheme.surface,
+            containerColor = MaterialTheme.colorScheme.tertiaryContainer,
         )
     ) {
         Row(
@@ -82,7 +83,7 @@ fun ExpenseItem(expense: Expense) {
             }
 
             Text(
-                text = "$${expense.amount}",
+                text = "Ksh.${expense.amount}",
                 fontWeight = FontWeight.Bold,
                 fontSize = 18.sp,
                 color = MaterialTheme.colorScheme.error
@@ -90,13 +91,13 @@ fun ExpenseItem(expense: Expense) {
         }
     }
 }
-
+//Category chip is place holder for image, icon or conditional colors...Each category with it's own colored icon.
 @Composable
 fun CategoryChip(category: String) {
     Box(
         modifier = Modifier
             .clip(RoundedCornerShape(16.dp))
-            .background(MaterialTheme.colorScheme.secondaryContainer)
+            .background(MaterialTheme.colorScheme.primaryContainer)
             .padding(horizontal = 8.dp, vertical = 4.dp)
     ) {
         Text(
@@ -118,8 +119,12 @@ fun AddExpenseScreen(
     onCategoryChange: (String) -> Unit,
     onAddExpense: () -> Unit
 ) {
-    val categoryOptions = listOf("Food", "Transportation", "Entertainment", "Utilities", "Shopping", "Other")
+    // Start with default categories
+    //note Report shows only default categories, Work on making it show custom.
+    var categoryOptions by remember { mutableStateOf(listOf("Food", "Transportation", "Entertainment", "Utilities", "Shopping", "Other")) }
     var showCategoryDropdown by remember { mutableStateOf(false) }
+    var showAddCustomCategory by remember { mutableStateOf(false) }
+    var customCategoryInput by remember { mutableStateOf("") }
 
     Column(
         modifier = Modifier
@@ -154,6 +159,7 @@ fun AddExpenseScreen(
             )
         )
 
+        // Category selection with custom option
         Box {
             OutlinedTextField(
                 value = expenseCategory,
@@ -178,6 +184,25 @@ fun AddExpenseScreen(
                 onDismissRequest = { showCategoryDropdown = false },
                 modifier = Modifier.fillMaxWidth(0.7f)
             ) {
+                // Add option to create a custom category
+                DropdownMenuItem(
+                    text = { Text("+ Add Custom Category") },
+                    onClick = {
+                        showCategoryDropdown = false
+                        showAddCustomCategory = true
+                    }
+                )
+
+                // Divider between add option and existing categories
+                Spacer(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(1.dp)
+                        .background(Color.LightGray)
+                        .padding(vertical = 4.dp)
+                )
+
+                // Show existing categories
                 categoryOptions.forEach { option ->
                     DropdownMenuItem(
                         text = { Text(option) },
@@ -186,6 +211,65 @@ fun AddExpenseScreen(
                             showCategoryDropdown = false
                         }
                     )
+                }
+            }
+        }
+
+        // Custom category input dialog
+        if (showAddCustomCategory) {
+            Card(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(vertical = 8.dp),
+                elevation = CardDefaults.cardElevation(defaultElevation = 4.dp)
+            ) {
+                Column(
+                    modifier = Modifier.padding(16.dp),
+                    verticalArrangement = Arrangement.spacedBy(8.dp)
+                ) {
+                    Text("Add Custom Category", fontWeight = FontWeight.Bold)
+
+                    OutlinedTextField(
+                        value = customCategoryInput,
+                        onValueChange = { customCategoryInput = it },
+                        label = { Text("New Category Name") },
+                        modifier = Modifier.fillMaxWidth(),
+                        singleLine = true
+                    )
+
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.End
+                    ) {
+                        Button(
+                            onClick = { showAddCustomCategory = false },
+                            colors = ButtonDefaults.buttonColors(
+                                containerColor = MaterialTheme.colorScheme.surface,
+                                contentColor = MaterialTheme.colorScheme.onSurface
+                            )
+                        ) {
+                            Text("Cancel")
+                        }
+
+                        Spacer(modifier = Modifier.width(8.dp))
+
+                        Button(
+                            onClick = {
+                                if (customCategoryInput.isNotEmpty()) {
+                                    // Add the new category to the list
+                                    categoryOptions = categoryOptions + customCategoryInput
+                                    // Select the new category
+                                    onCategoryChange(customCategoryInput)
+                                    // Reset the input and close the dialog
+                                    customCategoryInput = ""
+                                    showAddCustomCategory = false
+                                }
+                            },
+                            enabled = customCategoryInput.isNotEmpty()
+                        ) {
+                            Text("Add")
+                        }
+                    }
                 }
             }
         }

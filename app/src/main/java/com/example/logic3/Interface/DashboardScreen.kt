@@ -10,6 +10,8 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.MaterialTheme
@@ -63,6 +65,68 @@ fun DashboardScreen(
                         ) {
                             Text(text = parts[0], fontWeight = FontWeight.Medium)
                             Text(text = parts[1], fontWeight = FontWeight.Bold)
+                        }
+                    }
+                }
+            }
+        }
+        //UI for overflow
+        if (tracker.getRemainingDailyAllocation() > 0) {
+            Card(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(vertical = 8.dp),
+                colors = CardDefaults.cardColors(
+                    containerColor = MaterialTheme.colorScheme.secondaryContainer,
+                )
+            ) {
+                Column(
+                    modifier = Modifier.padding(16.dp)
+                ) {
+                    Text(
+                        text = "You're under budget today! What would you like to do with the surplus?",
+                        fontWeight = FontWeight.Medium,
+                        modifier = Modifier.padding(bottom = 8.dp)
+                    )
+
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.SpaceEvenly
+                    ) {
+                        Button(
+                            onClick = {
+                                tracker.adjustForUnderflow("reallocate")
+                                refreshData()
+                            },
+                            colors = ButtonDefaults.buttonColors(
+                                containerColor = MaterialTheme.colorScheme.primary
+                            )
+                        ) {
+                            Text("Reallocate")
+                        }
+
+                        Button(
+                            onClick = {
+                                tracker.adjustForUnderflow("next_day")
+                                refreshData()
+                            },
+                            colors = ButtonDefaults.buttonColors(
+                                containerColor = MaterialTheme.colorScheme.secondary
+                            )
+                        ) {
+                            Text("Add to Tomorrow")
+                        }
+
+                        Button(
+                            onClick = {
+                                tracker.adjustForUnderflow("save")
+                                refreshData()
+                            },
+                            colors = ButtonDefaults.buttonColors(
+                                containerColor = MaterialTheme.colorScheme.tertiary
+                            )
+                        ) {
+                            Text("Save")
                         }
                     }
                 }

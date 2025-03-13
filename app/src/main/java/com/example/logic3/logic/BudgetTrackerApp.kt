@@ -32,6 +32,7 @@ import androidx.compose.ui.unit.dp
 import com.example.logic3.Interface.AddExpenseScreen
 import com.example.logic3.Interface.BudgetSetupScreen
 import com.example.logic3.BudgetTracker
+import com.example.logic3.DatabaseHelper
 import com.example.logic3.Interface.DashboardScreen
 import com.example.logic3.Expense
 import com.example.logic3.Interface.ReportsScreen
@@ -102,6 +103,7 @@ fun BudgetTrackerApp() {
                         selected = selectedTab == index,
                         onClick = { selectedTab = index },
                         icon = {
+                            //Bottom bar Icons
                             Icon(
                                 imageVector = when(index) {
                                     0 -> Icons.Default.Dashboard
@@ -153,7 +155,7 @@ fun BudgetTrackerApp() {
                     }
                 )
                 2 -> {
-                    // Create the date picker within the composable function call for the correct context
+                    // Note->Create the date picker within the composable function call for the correct context
                     val dateFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd")
                     val formattedDate = selectedEndDate?.format(dateFormatter) ?: "Select Date"
 
@@ -200,13 +202,35 @@ fun BudgetTrackerApp() {
                         onEndBudget = {
                             val remainingAmount = tracker.getTotalRemainingBudget()
                             coroutineScope.launch { // **Launch coroutine here**
-                                snackbarHostState.showSnackbar("Budget ended. You have $${"%.2f".format(remainingAmount)} remaining.")
+                                snackbarHostState.showSnackbar("Budget ended. You have Ksh.${"%.2f".format(remainingAmount)} remaining.")
+
                             }
+                            //ends budget, refreshes Ui and clears database
+                            val budgettracker =BudgetTracker(context)
+                            val resetalldata=DatabaseHelper(context)
+                            budgettracker.resetDatabase()
+                            resetalldata.resetAllData()
+                            tracker.resetDatabase()
                             refreshData()
+
+
                         }
                     )
                 }
-                3 -> ReportsScreen(expensesList)
+                //NOTE reportscreen was Rs(ExpensesList) then Rs(tracker.expenses)
+                3 -> ReportsScreen(
+                    expenses = expensesList,
+                    budgetTracker = tracker,
+                    onExportReport = { reportText ->
+
+                        //TODO
+                        // Handle REPORT EXPORT
+                        coroutineScope.launch {
+                            snackbarHostState.showSnackbar("Report exported successfully!")
+                        }
+                        //todo PLACEHOLDER FOR EXPORT HANDLING LOGIC
+                    }
+                )
             }
         }
     }

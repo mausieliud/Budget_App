@@ -48,11 +48,37 @@ class DatabaseHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME
 
         db?.execSQL(createExpenseTableQuery)
         db?.execSQL(createBudgetTableQuery)
+
+
+        val createDailyAdjustmentsTableQuery = """
+    CREATE TABLE daily_adjustments (
+        date TEXT PRIMARY KEY,
+        adjustment REAL
+    )
+""".trimIndent()
+
+        db?.execSQL(createDailyAdjustmentsTableQuery)
+
+// Update budget table to include savings
+        val alterBudgetTableQuery = """
+    ALTER TABLE $BUDGET_TABLE_NAME ADD COLUMN savings REAL DEFAULT 0.0
+""".trimIndent()
+
+        db?.execSQL(alterBudgetTableQuery)
+
     }
 
     override fun onUpgrade(db: SQLiteDatabase?, oldVersion: Int, newVersion: Int) {
         db?.execSQL("DROP TABLE IF EXISTS $EXPENSE_TABLE_NAME")
         db?.execSQL("DROP TABLE IF EXISTS $BUDGET_TABLE_NAME")
         onCreate(db)
+    }
+    //deleting data/reseting
+    fun resetAllData() {
+        val db = this.writableDatabase
+        db.delete(EXPENSE_TABLE_NAME, null, null)
+        db.delete(BUDGET_TABLE_NAME, null, null)
+        db.delete("daily_adjustments", null, null)
+        db.close()
     }
 }

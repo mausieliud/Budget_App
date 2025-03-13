@@ -1,2 +1,2 @@
 # BUDGET-APP
-This is a budgeting app developed for android apps and allows the users create and manage their finances.
+This is a budgeting app developed for android apps that allows  users create budgets and track their spending.

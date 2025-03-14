@@ -61,7 +61,7 @@ fun CategoryDonutChart(
 
             // Draw inner circle (white hole)
             drawCircle(
-                color = Color.White,
+                color = Color.Black,
                 radius = innerRadius,
                 center = center
             )

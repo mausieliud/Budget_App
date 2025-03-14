@@ -71,17 +71,38 @@ fun BudgetTrackerApp() {
 
     // Parse budget summary and expense list
     val budgetSummary = remember(refreshTrigger) { tracker.getBudgetSummary().split("\n") }
+    //  expensesList parsing logic improved to fix category.
     val expensesList = remember(refreshTrigger) {
         val expenseStringList = tracker.getExpensesList().split("\n")
         expenseStringList.mapNotNull { line ->
             if (line.isBlank()) return@mapNotNull null // Skip blank lines
+
+            // First split by " - " to get description
             val parts = line.split(" - ", limit = 2)
             val description = parts.getOrNull(0) ?: ""
-            val restParts = parts.getOrNull(1)?.split(" ", "(", ")", "on ") ?: emptyList()
-            val amount = restParts.firstOrNull { it.startsWith("$") }?.substring(1)?.toDoubleOrNull() ?: 0.0
-            val category = restParts.firstOrNull { it.endsWith(")") }?.removeSuffix(")")?.removePrefix("(") ?: ""
-            val date = restParts.lastOrNull()?.trim() ?: LocalDate.now().toString()
-            Expense(0, description, amount, category, LocalDate.parse(date)) // ID is not parsed from string, assuming auto-increment by DB
+
+            if (parts.size < 2) return@mapNotNull null
+
+            // Parse the remaining part more carefully
+            val restPart = parts[1]
+
+            // Extract amount - Find the $ pattern and extract numeric value
+            val amountMatch = Regex("\\$([0-9.]+)").find(restPart)
+            val amount = amountMatch?.groupValues?.get(1)?.toDoubleOrNull() ?: 0.0
+
+            // Extract category - Find content between parentheses
+            val categoryMatch = Regex("\\(([^)]+)\\)").find(restPart)
+            val category = categoryMatch?.groupValues?.get(1) ?: ""
+
+            // Extract date - Find what comes after "on "
+            val dateMatch = Regex("on ([0-9-]+)").find(restPart)
+            val dateStr = dateMatch?.groupValues?.get(1) ?: LocalDate.now().toString()
+
+            try {
+                Expense(0, description, amount, category, LocalDate.parse(dateStr))
+            } catch (e: Exception) {
+                null // Skip invalid dates
+            }
         }
     }
 

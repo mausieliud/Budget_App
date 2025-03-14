@@ -1,6 +1,7 @@
 package com.example.logic3.Interface
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -11,7 +12,9 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
@@ -93,18 +96,46 @@ fun ExpenseItem(expense: Expense) {
 }
 //Category chip is place holder for image, icon or conditional colors...Each category with it's own colored icon.
 @Composable
-fun CategoryChip(category: String) {
+fun CategoryChip(
+    category: String,
+    modifier: Modifier = Modifier
+) {
+    val categoryColor = getCategoryColor(category)
+    val backgroundColor = categoryColor.copy(alpha = 0.15f)
+    val borderColor = categoryColor.copy(alpha = 0.3f)
+
     Box(
-        modifier = Modifier
+        modifier = modifier
             .clip(RoundedCornerShape(16.dp))
-            .background(MaterialTheme.colorScheme.primaryContainer)
-            .padding(horizontal = 8.dp, vertical = 4.dp)
+            .background(backgroundColor)
+            .border(
+                width = 1.dp,
+                color = borderColor,
+                shape = RoundedCornerShape(16.dp)
+            )
+            .padding(horizontal = 12.dp, vertical = 6.dp),
+        contentAlignment = Alignment.Center
     ) {
-        Text(
-            text = category,
-            fontSize = 12.sp,
-            color = MaterialTheme.colorScheme.onSecondaryContainer
-        )
+        Row(
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.spacedBy(4.dp)
+        ) {
+            // Color indicator dot
+            Box(
+                modifier = Modifier
+                    .size(8.dp)
+                    .clip(CircleShape)
+                    .background(categoryColor)
+            )
+
+            // Category text
+            Text(
+                text = category,
+                fontSize = 12.sp,
+                fontWeight = FontWeight.Medium,
+                color = MaterialTheme.colorScheme.onSurface
+            )
+        }
     }
 }
 

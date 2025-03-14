@@ -56,7 +56,11 @@ import java.time.temporal.TemporalAdjusters
 import kotlin.math.pow
 import kotlin.math.roundToInt
 import com.example.logic3.Interface.chart.CategoryDonutChart
+import com.example.logic3.Interface.chart.CategoryLegend
 import java.math.BigDecimal
+import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Box
+
 
 @Composable
 fun ReportsScreen(
@@ -331,6 +335,7 @@ fun ReportsScreen(
         when (selectedChartType) {
             "Categories" -> {
                 // Category Breakdown
+                // Updated Category Breakdown card with both chart and legend
                 Card(
                     modifier = Modifier
                         .fillMaxWidth()
@@ -356,6 +361,39 @@ fun ReportsScreen(
                                 modifier = Modifier.padding(vertical = 8.dp)
                             )
                         } else {
+                            // Chart and Legend in a Row
+                            Row(
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .padding(vertical = 16.dp),
+                                horizontalArrangement = Arrangement.SpaceBetween
+                            ) {
+                                // Add the Donut Chart
+                                Box(
+                                    modifier = Modifier
+                                        .weight(1f),
+                                    contentAlignment = Alignment.Center
+                                ) {
+                                    CategoryDonutChart(
+                                        categoryData = categoryTotals,
+                                        getCategoryColor = ::getCategoryColor
+                                    )
+                                }
+
+                                // Add the Legend
+                                Box(
+                                    modifier = Modifier
+                                        .weight(1f)
+                                ) {
+                                    CategoryLegend(
+                                        categories = categoryTotals.map { it.first },
+                                        getCategoryColor = ::getCategoryColor
+                                    )
+                                }
+                            }
+
+                            Divider(modifier = Modifier.padding(vertical = 8.dp))
+
                             // Calculate percentages for each category
                             val totalExpenses = categoryTotals.sumOf { it.second }
 
@@ -398,13 +436,11 @@ fun ReportsScreen(
                                     )
                                 }
                             }
-
-                            // PieChrt todo find library
-
                         }
                     }
                 }
             }
+
             "Daily" -> {
                 // Daily Spending Card
                 Card(
@@ -708,7 +744,7 @@ private fun Double.roundToDecimalPlaces(places: Int): Double {
     return (this * factor).roundToInt() / factor
 }
 //Useful once chart libraries found,
-private fun getCategoryColor(category: String): Color {
+fun getCategoryColor(category: String): Color {
     return when (category) {
         "Food" -> Color(0xFF4CAF50) // Green
         "Transportation" -> Color(0xFF2196F3) // Blue

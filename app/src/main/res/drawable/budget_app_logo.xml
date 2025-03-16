@@ -1,0 +1,80 @@
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="200dp"
+    android:height="200dp"
+    android:viewportWidth="200"
+    android:viewportHeight="200">
+
+    <!-- Background Circle -->
+    <path
+        android:fillColor="#3949AB"
+        android:pathData="M100,10A90,90 0 1,1 10,100A90,90 0 1,1 100,10Z" />
+
+    <!-- Subtle Circle Pattern for Depth -->
+    <path
+        android:fillColor="#FFFFFF"
+        android:fillAlpha="0.05"
+        android:pathData="M100,20A80,80 0 1,1 20,100A80,80 0 1,1 100,20Z" />
+
+    <!-- Coin Stack (shifted down) -->
+    <path
+        android:fillColor="#FFFFFF"
+        android:fillAlpha="0.2"
+        android:strokeColor="#FFFFFF"
+        android:strokeWidth="2"
+        android:pathData="M80,135 A20,7 0 1,0 120,135 A20,7 0 1,0 80,135 Z"/>
+    <path
+        android:fillColor="#FFFFFF"
+        android:fillAlpha="0.3"
+        android:strokeColor="#FFFFFF"
+        android:strokeWidth="2"
+        android:pathData="M80,125 A20,7 0 1,0 120,125 A20,7 0 1,0 80,125 Z"/>
+    <path
+        android:fillColor="#FFFFFF"
+        android:fillAlpha="0.4"
+        android:strokeColor="#FFFFFF"
+        android:strokeWidth="2"
+        android:pathData="M80,115 A20,7 0 1,0 120,115 A20,7 0 1,0 80,115 Z"/>
+    <path
+        android:fillColor="#FFFFFF"
+        android:fillAlpha="0.5"
+        android:strokeColor="#FFFFFF"
+        android:strokeWidth="2"
+        android:pathData="M80,105 A20,7 0 1,0 120,105 A20,7 0 1,0 80,105 Z"/>
+
+    <!-- Dollar Sign (shifted up for clarity) -->
+    <path
+        android:fillColor="#4CAF50"
+        android:pathData="M95,93C95,101.8 102.2,105 110,105C117.8,105 125,101.8 125,93C125,84.2 117.8,81 110,81C102.2,81 95,77.8 95,69C95,60.2 102.2,57 110,57C117.8,57 125,60.2 125,69M110,105L110,115M110,57L110,47"
+        android:strokeColor="#FFFFFF"
+        android:strokeWidth="6"
+        android:strokeLineCap="round"/>
+
+    <!-- Bar Chart (shifted slightly right and adjusted heights) -->
+    <path
+        android:fillColor="#FFFFFF"
+        android:fillAlpha="0.5"
+        android:pathData="M55,155 h16 v-12 h-16 Z" />
+    <path
+        android:fillColor="#FFFFFF"
+        android:fillAlpha="0.6"
+        android:pathData="M80,155 h16 v-25 h-16 Z" />
+    <path
+        android:fillColor="#FFFFFF"
+        android:fillAlpha="0.7"
+        android:pathData="M105,155 h16 v-35 h-16 Z" />
+    <path
+        android:fillColor="#FFFFFF"
+        android:fillAlpha="0.8"
+        android:pathData="M130,155 h16 v-45 h-16 Z" />
+    <path
+        android:fillColor="#FFFFFF"
+        android:fillAlpha="0.9"
+        android:pathData="M155,155 h16 v-60 h-16 Z" />
+
+    <!-- Base Line for Chart -->
+    <path
+        android:strokeColor="#FFFFFF"
+        android:strokeWidth="2"
+        android:strokeLineCap="round"
+        android:pathData="M50,155 L180,155" />
+</vector>

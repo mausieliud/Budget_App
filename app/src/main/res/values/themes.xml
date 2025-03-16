@@ -2,4 +2,16 @@
 <resources>
 
     <style name="Theme.Logic3" parent="android:Theme.Material.Light.NoActionBar" />
+
+    <style name="Theme.Logic3.Starting" parent="Theme.SplashScreen">
+
+        <item name="windowSplashScreenBackground">@color/black</item>
+
+        <item name="windowSplashScreenAnimatedIcon">@drawable/budget_app_logo</item>
+
+        <item name="postSplashScreenTheme">@style/Theme.Logic3</item>
+
+        <!-- Optional: Control the animation duration (in milliseconds) -->
+        <item name="windowSplashScreenAnimationDuration">200</item>
+    </style>
 </resources>

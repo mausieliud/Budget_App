@@ -71,7 +71,8 @@ fun CategoryDonutChart(
         Text(
             text = "Ksh.${categoryData.sumOf { it.second }.toInt()}",
             fontSize = 16.sp,
-            fontWeight = FontWeight.Bold
+            fontWeight = FontWeight.Bold,
+            color = Color.Black
         )
     }
 }

@@ -36,7 +36,7 @@ fun MinMaxSpentCard(
     modifier: Modifier = Modifier,
     isMin: Boolean,
     expenses: List<Expense>,
-    onExportReport: (String) -> Unit
+    onExportReport: (String, Boolean) -> Unit
 ) {
     // Find min or max expense
     val expense = if (isMin) {

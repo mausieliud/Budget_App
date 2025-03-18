@@ -36,6 +36,7 @@ import com.example.logic3.DatabaseHelper
 import com.example.logic3.Interface.DashboardScreen
 import com.example.logic3.Expense
 import com.example.logic3.Interface.ReportsScreen
+import com.example.logic3.Interface.chart.ReportExporter
 import kotlinx.coroutines.launch
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
@@ -239,17 +240,29 @@ fun BudgetTrackerApp() {
                     )
                 }
                 //NOTE reportscreen was Rs(ExpensesList) then Rs(tracker.expenses)
+                //NOTE
+                //OnExportReport on report screen was(string)->unit..Boolean is now added for option to export as text or csv.Had to change its calling on minMax spent card.It works now but has potential for future errors.
                 3 -> ReportsScreen(
                     expenses = expensesList,
                     budgetTracker = tracker,
-                    onExportReport = { reportText ->
-
-                        //TODO
-                        // Handle REPORT EXPORT
-                        coroutineScope.launch {
-                            snackbarHostState.showSnackbar("Report exported successfully!")
+                    onExportReport = { reportText, isCSV ->
+                        // Handle report export
+                        val fileUri = ReportExporter.exportReportToFile(context, reportText, isCSV)
+                        fileUri?.let { uri ->
+                            ReportExporter.shareReport(context, uri, isCSV)
+                            // Show success message
+                            coroutineScope.launch {
+                                snackbarHostState.showSnackbar(
+                                    if (isCSV) "CSV report exported successfully!"
+                                    else "Report exported successfully!"
+                                )
+                            }
+                        } ?: run {
+                            // Show error message
+                            coroutineScope.launch {
+                                snackbarHostState.showSnackbar("Failed to export report")
+                            }
                         }
-                        //todo PLACEHOLDER FOR EXPORT HANDLING LOGIC
                     }
                 )
             }

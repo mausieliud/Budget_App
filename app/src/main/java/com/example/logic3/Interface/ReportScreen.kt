@@ -60,13 +60,19 @@ import com.example.logic3.Interface.chart.CategoryLegend
 import java.math.BigDecimal
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
+import android.content.Intent
+import android.net.Uri
+import androidx.core.content.FileProvider
+import java.io.File
+import java.io.FileOutputStream
+import java.io.IOException
 
 
 @Composable
 fun ReportsScreen(
     expenses: List<Expense>,
     budgetTracker: BudgetTracker,
-    onExportReport: (String) -> Unit
+    onExportReport: (String, Boolean) -> Unit
 ) {
     var selectedTimeFrame by remember { mutableStateOf("Week") }
     val timeFrameOptions = listOf("Week", "Month", "All")
@@ -133,7 +139,7 @@ fun ReportsScreen(
 
             IconButton(onClick = {
                 val reportText = generateFullReport(filteredExpenses, budgetTracker)
-                onExportReport(reportText)
+                onExportReport(reportText, true)
             }) {
                 Icon(
                     Icons.Default.Share,
@@ -702,11 +708,11 @@ fun ReportsScreen(
             OutlinedButton(
                 onClick = {
                     val reportText = generateFullReport(filteredExpenses, budgetTracker)
-                    onExportReport(reportText)
+                    onExportReport(reportText, true) // true indicates CSV format
                 },
                 modifier = Modifier.weight(1f),
                 contentPadding = PaddingValues(vertical = 12.dp)
-            ) {
+            )  {
                 Icon(
                     Icons.Default.Download,
                     contentDescription = "Export CSV",
@@ -721,11 +727,11 @@ fun ReportsScreen(
             Button(
                 onClick = {
                     val reportText = generateSummaryReport(filteredExpenses, budgetTracker)
-                    onExportReport(reportText)
+                    onExportReport(reportText, false) // false indicates text format
                 },
                 modifier = Modifier.weight(1f),
                 contentPadding = PaddingValues(vertical = 12.dp)
-            ) {
+            ){
                 Icon(
                     Icons.Default.Share,
                     contentDescription = "Share Report",

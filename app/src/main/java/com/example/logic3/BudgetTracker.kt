@@ -169,7 +169,6 @@ class BudgetTracker(context: Context) {
         val dailySpent = expenses.filter { it.date == date }.sumOf { it.amount }
         return allocationPerDay - dailySpent
     }
-    
 
     fun getExpensesList(): String {
         return expenses.joinToString("\n") {

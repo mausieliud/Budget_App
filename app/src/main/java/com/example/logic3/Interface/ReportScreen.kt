@@ -757,8 +757,12 @@ fun getCategoryColor(category: String): Color {
         "Entertainment" -> Color(0xFFFF9800) // Orange
         "Utilities" -> Color(0xFF9C27B0) // Purple
         "Shopping" -> Color(0xFFE91E63) // Pink
-        else -> Color(0xFF607D8B) // Blue Gray
-    }
+       else -> {
+            // Generate a consistent color based on the category string
+            val hash = category.hashCode()
+            val hue = (abs(hash) % 360).toFloat()
+            Color.hsv(hue, 0.7f, 0.8f)
+        }
 }
 
 private fun calculateTrend(dailyTotals: List<Pair<LocalDate, Double>>): Double {

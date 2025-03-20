@@ -34,7 +34,7 @@ import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import java.time.LocalDate
-
+//Budget setup ui
 @Composable
 fun BudgetSetupScreen(
     budgetAmount: String,
@@ -57,7 +57,7 @@ fun BudgetSetupScreen(
             fontWeight = FontWeight.Bold,
             modifier = Modifier.padding(bottom = 8.dp)
         )
-
+//budget amount input
         OutlinedTextField(
             value = budgetAmount,
             onValueChange = onBudgetAmountChange,
@@ -97,7 +97,7 @@ fun BudgetSetupScreen(
         )
 
         Spacer(modifier = Modifier.height(16.dp))
-
+//set budget button
         Button(
             onClick = onSetBudget,
             modifier = Modifier
@@ -113,7 +113,7 @@ fun BudgetSetupScreen(
         }
 
         Spacer(modifier = Modifier.height(8.dp))
-
+//end budget button
         OutlinedButton(
             onClick = onEndBudget,
             modifier = Modifier

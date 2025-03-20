@@ -1,5 +1,7 @@
 package com.example.logic3.Interface
 
+import android.os.Build
+import androidx.annotation.RequiresApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -50,7 +52,8 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.logic3.Expense
 import java.time.format.DateTimeFormatter
-
+//ui for adding expense and category
+@RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun ExpenseItem(expense: Expense) {
     Card(
@@ -150,8 +153,7 @@ fun AddExpenseScreen(
     onCategoryChange: (String) -> Unit,
     onAddExpense: () -> Unit
 ) {
-    // Start with default categories
-    //note Report shows only default categories, Work on making it show custom.
+    //budget category
     var categoryOptions by remember { mutableStateOf(listOf("Food", "Transportation", "Entertainment", "Utilities", "Shopping", "Other")) }
     var showCategoryDropdown by remember { mutableStateOf(false) }
     var showAddCustomCategory by remember { mutableStateOf(false) }
@@ -215,7 +217,7 @@ fun AddExpenseScreen(
                 onDismissRequest = { showCategoryDropdown = false },
                 modifier = Modifier.fillMaxWidth(0.7f)
             ) {
-                // Add option to create a custom category
+                //  Option to create a custom category
                 DropdownMenuItem(
                     text = { Text("+ Add Custom Category") },
                     onClick = {
@@ -309,7 +311,7 @@ fun AddExpenseScreen(
         }
 
         Spacer(modifier = Modifier.height(16.dp))
-
+//add expense button
         Button(
             onClick = onAddExpense,
             modifier = Modifier

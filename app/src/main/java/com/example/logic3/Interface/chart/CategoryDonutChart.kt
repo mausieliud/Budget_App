@@ -17,7 +17,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import kotlin.math.min
-
+//donut chart for the budget categories
 @Composable
 fun CategoryDonutChart(
     categoryData: List<Pair<String, Double>>,

@@ -1,5 +1,7 @@
 package com.example.logic3.Interface
 
+import android.os.Build
+import androidx.annotation.RequiresApi
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.IntrinsicSize
 import androidx.compose.foundation.layout.PaddingValues
@@ -31,6 +33,7 @@ import java.time.format.DateTimeFormatter
 /**
  * A card that displays either the minimum or maximum expense with its details
  */
+@RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun MinMaxSpentCard(
     modifier: Modifier = Modifier,

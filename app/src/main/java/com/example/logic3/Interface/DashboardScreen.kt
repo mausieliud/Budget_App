@@ -30,7 +30,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.example.logic3.BudgetTracker
 import com.example.logic3.Expense
-
+//ui for dashboard
 @Composable
 fun DashboardScreen(
     budgetSummary: List<String>,
@@ -76,6 +76,7 @@ fun DashboardScreen(
                 }
             }
         }
+        //ui for underflow and overflow
         // Get reference to SharedPreferences
         val sharedPreferences = LocalContext.current.getSharedPreferences("BudgetAppPrefs", Context.MODE_PRIVATE)
         // value to record whether the button has been shown

@@ -22,7 +22,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.foundation.layout.Row
 
 
-
+//Display category legends
 @Composable
 fun CategoryLegend(
     categories: List<String>,

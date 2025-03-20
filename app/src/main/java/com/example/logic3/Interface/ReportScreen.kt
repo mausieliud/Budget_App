@@ -62,6 +62,8 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import android.content.Intent
 import android.net.Uri
+import android.os.Build
+import androidx.annotation.RequiresApi
 import androidx.core.content.FileProvider
 import java.io.File
 import java.io.FileOutputStream
@@ -69,6 +71,7 @@ import java.io.IOException
 import kotlin.math.abs
 
 
+@RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun ReportsScreen(
     expenses: List<Expense>,
@@ -788,6 +791,7 @@ private fun calculateTrend(dailyTotals: List<Pair<LocalDate, Double>>): Double {
     }
 }
 
+@RequiresApi(Build.VERSION_CODES.O)
 private fun calculateWeeklyAverages(expenses: List<Expense>): List<Pair<LocalDate, Double>> {
     if (expenses.isEmpty()) return emptyList()
 
@@ -846,6 +850,7 @@ private fun generateFullReport(expenses: List<Expense>, budgetTracker: BudgetTra
     return sb.toString()
 }
 
+@RequiresApi(Build.VERSION_CODES.O)
 private fun generateSummaryReport(expenses: List<Expense>, budgetTracker: BudgetTracker): String {
     val sb = StringBuilder()
 

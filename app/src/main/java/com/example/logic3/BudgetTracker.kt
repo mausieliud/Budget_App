@@ -23,7 +23,7 @@ class BudgetTracker(context: Context) {
         loadBudget()
         loadExpenses()
     }
-
+//Gets the budget from the database and updates the values
     private fun loadBudget() {
         val db = dbHelper.readableDatabase
         val cursor = db.query(
@@ -56,7 +56,7 @@ class BudgetTracker(context: Context) {
         }
         db.close()
     }
-
+//save budget to the database
     private fun saveBudgetToDb() {
         val db = dbHelper.writableDatabase
         db.delete(DatabaseHelper.BUDGET_TABLE_NAME, null, null) // Clear old budget data
@@ -99,7 +99,7 @@ class BudgetTracker(context: Context) {
         }
         db.close()
     }
-
+//Set budget for a given period of time
     fun setBudget(amount: Double, endDate: LocalDate) {
         totalBudget = amount
         this.endDate = endDate
@@ -110,7 +110,7 @@ class BudgetTracker(context: Context) {
         saveBudgetToDb() // Save budget to database
         recalculateDailyAllocationIfNeeded() // Recalculate based on current expenses and budget
     }
-
+//Allows adding of expenses
     fun addExpense(description: String, amount: Double, category: String) {
         val id = if (expenses.isEmpty()) 1 else expenses.maxOf { it.id } + 1
         val expense = Expense(id, description, amount, category)
@@ -144,7 +144,7 @@ class BudgetTracker(context: Context) {
         db.close()
     }
 
-
+//Calculates daily allocation in case the daily allocation has been exceeded
     private fun recalculateDailyAllocationIfNeeded() {
         val today = LocalDate.now()
         val dailySpent = expenses.filter { it.date == today }.sumOf { it.amount }
@@ -164,7 +164,7 @@ class BudgetTracker(context: Context) {
             saveBudgetToDb() // Save updated allocation to DB
         }
     }
-
+//Gets the remaining money allocated for the day
     fun getRemainingDailyAllocation(date: LocalDate = LocalDate.now()): Double {
         val dailySpent = expenses.filter { it.date == date }.sumOf { it.amount }
         return allocationPerDay - dailySpent
@@ -175,7 +175,7 @@ class BudgetTracker(context: Context) {
             "${it.description} - $${String.format("%.2f", it.amount)} (${it.category}) on ${it.date}"
         }
     }
-
+//Budget summary
     fun getBudgetSummary(): String {
         return "Total Budget: Ksh.${String.format("%.2f", totalBudget)}\n" +
                 "Daily Allocation: Ksh.${String.format("%.2f", allocationPerDay)}\n" +
@@ -187,7 +187,7 @@ class BudgetTracker(context: Context) {
     fun getTotalRemainingBudget(): Double {
         return totalRemainingBudget
     }
-    // Add to BudgetTracker class
+    // underflow logic
     fun adjustForUnderflow(option: String = "reallocate") {
         val today = LocalDate.now()
         val dailySpent = expenses.filter { it.date == today }.sumOf { it.amount }
@@ -235,7 +235,7 @@ class BudgetTracker(context: Context) {
             saveBudgetToDb()
         }
     }
-
+//overflow logic
     fun adjustForOverflow() {
         val today = LocalDate.now()
         val dailySpent = expenses.filter { it.date == today }.sumOf { it.amount }

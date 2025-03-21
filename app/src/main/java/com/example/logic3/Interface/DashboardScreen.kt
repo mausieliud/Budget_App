@@ -1,6 +1,8 @@
 package com.example.logic3.Interface
 import android.content.Context
+import android.os.Build
 import android.widget.Toast
+import androidx.annotation.RequiresApi
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -31,6 +33,7 @@ import androidx.compose.ui.unit.dp
 import com.example.logic3.BudgetTracker
 import com.example.logic3.Expense
 //ui for dashboard
+@RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun DashboardScreen(
     budgetSummary: List<String>,
@@ -184,23 +187,12 @@ fun DashboardScreen(
                     .fillMaxWidth()
                     .weight(1f)
             ) {
-                items(expenses.take(5)) { expense ->
+                items(expenses.take(100)) { expense ->
                     ExpenseItem(expense)
                 }
 
-                if (expenses.size > 5) {
-                    item {
-                        TextButton(
-                            onClick = { /* Navigate to full list */ },
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .padding(vertical = 8.dp)
-                        ) {
-                            Text("View All Expenses")
-                        }
-                    }
                 }
             }
         }
     }
-}
+

@@ -7,16 +7,19 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
@@ -25,6 +28,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
@@ -32,6 +36,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.example.logic3.BudgetTracker
 import com.example.logic3.Expense
+import com.example.logic3.Interface.calculateColor
 //ui for dashboard
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
@@ -41,8 +46,16 @@ fun DashboardScreen(
     tracker: BudgetTracker,
     refreshData: () -> Unit
 ) {
-
     val context = LocalContext.current
+
+
+    BudgetProgressBar(
+        totalBudget = tracker.getTotalBudget(),
+        totalRemainingBudget = tracker.getTotalRemainingBudget()
+    )
+
+    Spacer(modifier = Modifier.height(8.dp))
+
     Column(modifier = Modifier.fillMaxSize()) {
         // Budget Summary Card
         Card(
@@ -66,6 +79,10 @@ fun DashboardScreen(
                 budgetSummary.forEach { line ->
                     val parts = line.split(": ")
                     if (parts.size == 2) {
+                        // Check if this is either "Remaining for today" or "Remaining Amount" line
+                        val isRemainingForToday = parts[0].contains("Remaining for today")
+                        val isRemainingAmount = parts[0].contains("Remaining Amount")
+
                         Row(
                             modifier = Modifier
                                 .fillMaxWidth()
@@ -73,12 +90,35 @@ fun DashboardScreen(
                             horizontalArrangement = Arrangement.SpaceBetween
                         ) {
                             Text(text = parts[0], fontWeight = FontWeight.Medium)
-                            Text(text = parts[1], fontWeight = FontWeight.Bold)
+
+                            // Apply dynamic color for both remaining values
+                            if (isRemainingForToday || isRemainingAmount) {
+                                // Extract numerical value from the string (remove "Ksh." and parse)
+                                val valueStr = parts[1].replace("Ksh.", "").trim()
+                                val remainingValue = valueStr.toDoubleOrNull() ?: 0.0
+
+                                // Choose the appropriate total to compare against
+                                val totalValue = if (isRemainingForToday) {
+                                    tracker.getDailyAllocation()
+                                } else {
+                                    // For total remaining amount, compare against the original total budget
+                                    tracker.getTotalRemainingBudget() + expenses.sumOf { it.amount } // Approximation of original budget
+                                }
+
+                                Text(
+                                    text = parts[1],
+                                    fontWeight = FontWeight.Bold,
+                                    color = calculateColor(remainingValue, totalValue)
+                                )
+                            } else {
+                                Text(text = parts[1], fontWeight = FontWeight.Bold)
+                            }
                         }
                     }
                 }
             }
         }
+
         //ui for underflow and overflow
         // Get reference to SharedPreferences
         val sharedPreferences = LocalContext.current.getSharedPreferences("BudgetAppPrefs", Context.MODE_PRIVATE)

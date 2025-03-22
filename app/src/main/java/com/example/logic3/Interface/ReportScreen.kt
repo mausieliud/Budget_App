@@ -122,6 +122,12 @@ fun ReportsScreen(
         .groupBy { it.category }
         .maxByOrNull { it.value.size }?.key ?: "None"
 
+
+    BudgetProgressBar(
+        totalBudget = budgetTracker.getTotalBudget(),
+        totalRemainingBudget = budgetTracker.getTotalRemainingBudget()
+    )
+    Spacer(modifier = Modifier.height(8.dp))
     Column(
         modifier = Modifier
             .fillMaxSize()

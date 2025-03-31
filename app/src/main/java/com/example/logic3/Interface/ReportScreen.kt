@@ -506,7 +506,7 @@ fun ReportsScreen(
                                         )
                                         Row {
                                             Text(
-                                                text = "$${total.roundToDecimalPlaces(2)}",
+                                                text = "Ksh.${total.roundToDecimalPlaces(2)}",
                                                 fontWeight = FontWeight.Bold,
                                                 color = if (overBudget) MaterialTheme.colorScheme.error else Color.Unspecified
                                             )
@@ -521,15 +521,20 @@ fun ReportsScreen(
                                     }
 
                                     // Daily spending progress bar
+                                    // Daily spending progress bar
                                     if (dailyBudget > 0) {
+                                        val progressPercentage = (percentOfBudget / 100).coerceAtMost(1.0).toFloat()
+                                        val remainingBudget = dailyBudget - total
+                                        val spendingColor = calculateColor(remainingBudget, dailyBudget)
+
                                         LinearProgressIndicator(
-                                            progress = (percentOfBudget / 100).coerceAtMost(1.0).toFloat(),
+                                            progress = progressPercentage,
                                             modifier = Modifier
                                                 .fillMaxWidth()
                                                 .height(8.dp)
                                                 .padding(top = 4.dp)
                                                 .clip(RoundedCornerShape(4.dp)),
-                                            color = if (overBudget) MaterialTheme.colorScheme.error else MaterialTheme.colorScheme.primary
+                                            color = spendingColor
                                         )
                                     }
                                 }
@@ -628,7 +633,7 @@ fun ReportsScreen(
                                             style = MaterialTheme.typography.bodySmall
                                         )
                                         Text(
-                                            text = "$${average.roundToDecimalPlaces(2)}",
+                                            text = "Ksh.${average.roundToDecimalPlaces(2)}",
                                             fontWeight = FontWeight.Bold
                                         )
                                     }

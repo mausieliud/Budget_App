@@ -166,7 +166,7 @@ private fun EmptyMinMaxCard(modifier: Modifier, isMin: Boolean) {
             Text(
                 text = "No expense data available",
                 style = MaterialTheme.typography.bodyMedium,
-                color = Color.Gray
+                color = Color.LightGray
             )
         }
     }

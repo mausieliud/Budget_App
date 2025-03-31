@@ -82,7 +82,7 @@ fun ExpenseItem(expense: Expense) {
                     Spacer(modifier = Modifier.width(8.dp))
                     Text(
                         text = expense.date.format(DateTimeFormatter.ISO_DATE),
-                        color = Color.Gray,
+                        color = Color.Cyan,
                         fontSize = 12.sp
                     )
                 }
@@ -163,7 +163,7 @@ fun AddExpenseScreen(
         modifier = Modifier
             .fillMaxSize()
             .padding(16.dp),
-        verticalArrangement = Arrangement.spacedBy(16.dp)
+        verticalArrangement = Arrangement.spacedBy(24.dp)
     ) {
         Text(
             text = "Add New Expense",

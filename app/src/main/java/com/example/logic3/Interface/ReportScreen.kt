@@ -146,17 +146,6 @@ fun ReportsScreen(
                 style = MaterialTheme.typography.headlineSmall,
                 fontWeight = FontWeight.Bold
             )
-
-            IconButton(onClick = {
-                val reportText = generateFullReport(filteredExpenses, budgetTracker)
-                onExportReport(reportText, true)
-            }) {
-                Icon(
-                    Icons.Default.Share,
-                    contentDescription = "Export Report",
-                    tint = MaterialTheme.colorScheme.primary
-                )
-            }
         }
 
         // Filter Controls
